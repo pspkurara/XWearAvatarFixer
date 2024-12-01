@@ -1,0 +1,21 @@
+{
+    "name": "pspkurara.XWearAvatarFixer.Runtime",
+    "rootNamespace": "pspkurara.XWearAvatarFixer.Runtime",
+    "references": [
+        "GUID:94cd2f2753384984b941dab8ae5e417b",
+        "GUID:bfc62ffda12b4b61a9cb0c50c7279291",
+        "GUID:e47c917724578cc43b5506c17a27e9a0",
+        "GUID:5718fb738711cd34ea54e9553040911d"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

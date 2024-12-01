@@ -1,0 +1,22 @@
+{
+  "name": "com.pspkurara.xwear-avatar-fixer",
+  "version": "1.0.0",
+  "displayName": "XWear Avatar Fixer",
+  "description": "A temporary fix for the issue where physics calculations break when using XWear and exporting VRM-1.0 with VRoidStudio.",
+  "unity": "2021.3",
+  "keywords": [
+    "vrm",
+    "importer",
+    "avatar",
+    "vr"
+  ],
+  "author": {
+    "name": "pspkurara"
+  },
+  "dependencies": {
+    "com.vroid.xwear": "0.3.2",
+    "com.vrmc.gltf": "0.127.0",
+  },
+  "samples": [
+  ]
+}

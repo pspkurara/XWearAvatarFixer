@@ -1,0 +1,66 @@
+{
+  "dependencies": {
+    "com.vrchat.base": {
+      "version": "3.7.4"
+    },
+    "com.vrchat.avatars": {
+      "version": "3.7.4"
+    },
+    "com.vrchat.core.vpm-resolver": {
+      "version": "0.1.29"
+    },
+    "com.pixiv.vroid.xwear": {
+      "version": "0.3.2"
+    },
+    "com.vrmc.univrm": {
+      "version": "0.127.0"
+    },
+    "jp.pokemori.vrm-converter-for-vrchat": {
+      "version": "41.4.0"
+    }
+  },
+  "locked": {
+    "com.vrchat.base": {
+      "version": "3.7.4",
+      "dependencies": {}
+    },
+    "com.vrchat.avatars": {
+      "version": "3.7.4",
+      "dependencies": {
+        "com.vrchat.base": "3.7.4"
+      }
+    },
+    "com.vrchat.core.vpm-resolver": {
+      "version": "0.1.29",
+      "dependencies": {}
+    },
+    "com.pixiv.vroid.xwear": {
+      "version": "0.3.2",
+      "dependencies": {}
+    },
+    "com.vrmc.univrm": {
+      "version": "0.127.0",
+      "dependencies": {
+        "com.vrmc.gltf": "0.127.0"
+      }
+    },
+    "com.vrmc.gltf": {
+      "version": "0.127.0",
+      "dependencies": {}
+    },
+    "jp.pokemori.vrm-converter-for-vrchat": {
+      "version": "41.4.0",
+      "dependencies": {
+        "com.vrchat.avatars": "^3.5.0",
+        "com.vrmc.univrm": "^0.127.0",
+        "jp.pokemori.univrm-extensions": "^10.3.0"
+      }
+    },
+    "jp.pokemori.univrm-extensions": {
+      "version": "10.3.0",
+      "dependencies": {
+        "com.vrmc.univrm": "^0.127.0"
+      }
+    }
+  }
+}
