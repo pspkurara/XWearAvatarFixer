@@ -9,7 +9,7 @@ XWear Packager/VRoid Studioの着せ替え機能で書き出したVRM1.0の物�
 ### 修復される問題
 
 - すべての揺れ物が以下の値にされる
-![image](https://github.com/user-attachments/assets/468d84be-0894-4b52-8671-9aa33bdfadd3)
+</br>![image](https://github.com/user-attachments/assets/468d84be-0894-4b52-8671-9aa33bdfadd3)
 - 揺れ物のオブジェクトで必須のエンドボーン（末端ボーンの長さを決めるためだけのボーンで、VRChatのPhysBoneでは値で管理するため不要）がない場合に作られない
 - 一部のコライダーが作られない ※現状は衣装かつ完全に失われている場合にのみ対応
 
