@@ -36,7 +36,7 @@ Unity 2022.3.2f1
 ## 使い方
 
 以下fanbox記事参考 (全体公開です)
-https://djkurara.fanbox.cc/posts/8970211
+</br>https://djkurara.fanbox.cc/posts/8970211
 
 ## ライセンス
 
