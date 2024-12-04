@@ -15,8 +15,6 @@
   },
   "dependencies": {
     "com.vroid.xwear": "0.3.2",
-    "com.vrmc.gltf": "0.127.0",
-  },
-  "samples": [
-  ]
+    "com.vrmc.gltf": "0.127.0"
+  }
 }
