@@ -17,8 +17,9 @@ namespace pspkurara.VRM10FromXRoidAvatarFixer.Editor
 		const string LastExportPathKey = "AVATAR FIXER LAST EXPORT PATH";
 
 		const string DialogTitleContext = "Avatar Fixer";
-		const string CreateXWearSourceMenuItemContext = "Create/XWear Avatar Fixer/XWearSource";
-		const string FromXRoidAvatarFixingContext = "XWear Avatar Fixer/From XRoid Avatar Fixing";
+		const string MenuItemContextHeader = "XWear Avatar Fixer/";
+		const string CreateXWearSourceMenuItemContext = "Create/" + MenuItemContextHeader + "XWearSource";
+		const string FromXRoidAvatarFixingContext = MenuItemContextHeader + "From XRoid Avatar Fixing";
 
 		/// <summary>
 		/// XRoidから書き出したVRM1.0ファイルを修復して書き出す
@@ -107,6 +108,33 @@ namespace pspkurara.VRM10FromXRoidAvatarFixer.Editor
 			{
 				// 1つずつ変換する
 				AvatarFixer.ConvertSpringBone(o);
+				Debug.Log($"Completed {o.name}");
+			}
+
+			Debug.Log("Convert Completed.");
+		}
+
+		/// <summary>
+		/// VRM1.0プレハブの使っていないSpringJointとColliderを消去する
+		/// ヒエラルキー上にインスタンスされている状態でなければ動作しない
+		/// 形式がVRM1.0と同じであれば編集中のプレハブでも動作する筈
+		/// </summary>
+		[MenuItem("GameObject/" + MenuItemContextHeader + "Remove Unused Spring Bones And Colliders")]
+		public static void RemoveUnusedSpringBoneAndColliders()
+		{
+			var selectingAvatarRoot = Selection.objects
+				.Cast<GameObject>()
+				.Select(o => o.GetComponent<Vrm10Instance>())
+				.Where(o => o != null);
+
+			// 1つも選んでいなかったらやめる
+			if (selectingAvatarRoot.Count() == 0) return;
+
+			Debug.Log("Start Covert.");
+			foreach (var o in selectingAvatarRoot)
+			{
+				// 1つずつ変換する
+				AvatarFixer.RemoveUnuseSpringBone(o);
 				Debug.Log($"Completed {o.name}");
 			}
 

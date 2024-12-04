@@ -413,6 +413,76 @@ namespace pspkurara.VRM10FromXRoidAvatarFixer.Editor
 			return false;
 		}
 
+		/// <summary>
+		/// 使っていないSpringBoneを消去する
+		/// </summary>
+		/// <param name="vrmInstance">対象VRM</param>
+		public static void RemoveUnuseSpringBone(Vrm10Instance vrmInstance)
+		{
+			Undo.RecordObject(vrmInstance, "Remove Spring Bone");
+
+			// 現状の使用中コライダーグループを列挙
+			var beforeColliders = vrmInstance.SpringBone.Springs
+				.SelectMany(s => s.ColliderGroups)
+				.Where(s => s != null)
+				.ToList();
+
+			// Joint数がゼロやnullしかないSpringは消去する
+			vrmInstance.SpringBone.Springs = vrmInstance.SpringBone.Springs
+				.Where(s => !(s.Joints.All(null) || s.Joints.Count == 0))
+				.ToList();
+
+			// 改めて現状のコライダーグループをチェック
+			var afterColliders = vrmInstance.SpringBone.Springs
+				.SelectMany(s => s.ColliderGroups);
+
+			// 前のコライダーグループの一覧と比較して消去対象を選別
+			var removedColliders = beforeColliders
+				// 新しいほうに存在しなければ「不要になった」と判断
+				.Where(c => !afterColliders.Contains(c));
+
+			// コライダーグループの一覧を整理
+			vrmInstance.SpringBone.ColliderGroups = vrmInstance.SpringBone.ColliderGroups
+				// 空のものは消去
+				.Where(c => c != null)
+				// 削除対象リストに入っているものを消去
+				.Where(c => !removedColliders.Contains(c))
+				.ToList();
+
+			// 未参照のコライダーグループを抽出する
+			var unusingColliderGroups = vrmInstance.GetComponentsInChildren<VRM10SpringBoneColliderGroup>()
+				.Where(c => !vrmInstance.SpringBone.ColliderGroups.Contains(c));
+
+			// コライダーグループを消去する
+			foreach (var c in unusingColliderGroups)
+			{
+				Undo.DestroyObjectImmediate(c);
+			}
+
+			// 現状残っているコライダーグループを抽出
+			var activeColliders = vrmInstance.GetComponentsInChildren<VRM10SpringBoneColliderGroup>()
+				.SelectMany(c => c.Colliders);
+
+			// 未参照のコライダーを抽出
+			var unusedColliders = vrmInstance.GetComponentsInChildren<VRM10SpringBoneCollider>()
+				.Where(c => !activeColliders.Contains(c));
+
+			// コライダーを削除する
+			foreach (var c in unusedColliders)
+			{
+				Undo.DestroyObjectImmediate(c);
+			}
+
+			// Jointのnullを消去する
+			foreach (var s in vrmInstance.SpringBone.Springs)
+			{
+				s.Joints = s.Joints.Where(j => j != null).ToList();
+			}
+
+			// 反映
+			EditorUtility.SetDirty(vrmInstance);
+		}
+
 	}
 
 }
