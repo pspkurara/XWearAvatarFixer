@@ -429,7 +429,9 @@ namespace pspkurara.VRM10FromXRoidAvatarFixer.Editor
 
 			// Joint数がゼロやnullしかないSpringは消去する
 			vrmInstance.SpringBone.Springs = vrmInstance.SpringBone.Springs
-				.Where(s => !(s.Joints.All(null) || s.Joints.Count == 0))
+				.Where(s => s != null)
+				.Where(s => s.Joints.Count > 0)
+				.Where(s => !s.Joints.All(j => j == null))
 				.ToList();
 
 			// 改めて現状のコライダーグループをチェック
