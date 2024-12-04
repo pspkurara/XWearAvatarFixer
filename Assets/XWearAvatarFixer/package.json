@@ -14,7 +14,7 @@
     "name": "pspkurara"
   },
   "dependencies": {
-    "com.vroid.xwear": "0.3.2",
+    "com.pixiv.vroid.xwear": "0.3.2",
     "com.vrmc.gltf": "0.127.0"
   }
 }
