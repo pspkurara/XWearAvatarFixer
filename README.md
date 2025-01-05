@@ -50,6 +50,9 @@ https://github.com/pspkurara/XWearAvatarFixer.git?path=/Assets/XWearAvatarFixer
 "com.pspkurara.xwear-avatar-fixer": "https://github.com/pspkurara/XWearAvatarFixer.git?path=/Assets/XWearAvatarFixer",
 ```
 
+unitypackageが必要な場合は以下のからAssets項内よりDLしてください</br>
+https://github.com/pspkurara/XWearAvatarFixer/releases
+
 ## ライセンス
 
 * [MIT](https://github.com/pspkurara/XWearAvatarFixer/blob/main/Assets/XWearAvatarFixer/LICENSE.txt)
