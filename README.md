@@ -43,6 +43,11 @@ Unity 2022.3.2f1
 Package Managerの Add package from git URL... に以下を貼り付けて導入してください
 https://github.com/pspkurara/XWearAvatarFixer.git?path=/Assets/XWearAvatarFixer
 
+或いは、Packages/manifest.jsonの"dependencies":内に以下を追加すると動作します (JSONなので、最終行に追加する場合は最後のコンマを外してください)
+```
+"com.pspkurara.xwear-avatar-fixer": "https://github.com/pspkurara/XWearAvatarFixer.git?path=/Assets/XWearAvatarFixer",
+```
+
 ## ライセンス
 
 * [MIT](https://github.com/pspkurara/XWearAvatarFixer/blob/main/Assets/XWearAvatarFixer/LICENSE.txt)
