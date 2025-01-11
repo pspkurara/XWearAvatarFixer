@@ -31,6 +31,8 @@ namespace pspkurara.VRM10FromXRoidAvatarFixer.Runtime
 	public sealed class XWearData
 	{
 
+		const string EmptyErrorMessage = "XWearSource.assetに空のプレハブがあります。";
+
 		[Header("Source Prefab")]
 		[SerializeField] private GameObject m_Wear;
 
@@ -87,6 +89,7 @@ namespace pspkurara.VRM10FromXRoidAvatarFixer.Runtime
 		/// <returns>ルートコンポーネント</returns>
 		public AccessoryRootComponent GetAccessoryRootComponent()
 		{
+			if (wear == null) Debug.LogException(new System.Exception(EmptyErrorMessage));
 			return wear.GetComponent<AccessoryRootComponent>();
 		}
 
@@ -96,6 +99,7 @@ namespace pspkurara.VRM10FromXRoidAvatarFixer.Runtime
 		/// <returns>ルートコンポーネント</returns>
 		public HumanoidMapComponent GetHumanoidMapComponent()
 		{
+			if (wear == null) Debug.LogException(new System.Exception(EmptyErrorMessage));
 			return wear.GetComponent<HumanoidMapComponent>();
 		}
 
