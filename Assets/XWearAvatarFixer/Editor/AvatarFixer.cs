@@ -10,6 +10,7 @@ using UniHumanoid;
 namespace pspkurara.VRM10FromXRoidAvatarFixer.Editor
 {
 	using Runtime;
+	using UnityEngine.UIElements;
 	using VRC.PackageManagement.Core;
 	using XWear.IO.Runtime.Components.AccessoryRoot;
 	using XWear.IO.Runtime.Components.HumanoidMap;
@@ -537,6 +538,24 @@ namespace pspkurara.VRM10FromXRoidAvatarFixer.Editor
 
 			// 反映
 			EditorUtility.SetDirty(vrmInstance);
+		}
+
+		/// <summary>
+		/// VRMで参照のないRendererを削除する
+		/// </summary>
+		/// <param name="vrm10Instance">対象VRM</param>
+		public static void CleanUnusedRenderers(Vrm10Instance vrm10Instance)
+		{
+			Undo.RecordObject(vrm10Instance.Vrm, "CleanUnusedRenderers");
+			List<string> removeTargets = new List<string>();
+			var renderers = vrm10Instance.GetComponentsInChildren<Renderer>();
+			foreach (var r in vrm10Instance.Vrm.FirstPerson.Renderers)
+			{
+				var paths = renderers.Select(x => x.transform.RelativePathFrom(vrm10Instance.transform));
+				if (!paths.Contains(r.Renderer)) removeTargets.Add(r.Renderer);
+			}
+			vrm10Instance.Vrm.FirstPerson.Renderers.RemoveAll(r => removeTargets.Contains(r.Renderer));
+			EditorUtility.SetDirty(vrm10Instance.Vrm);
 		}
 
 	}

@@ -23,6 +23,7 @@ namespace pspkurara.VRM10FromXRoidAvatarFixer.Editor
 		const string CreateXWearSourceMenuItemContext = "Create/" + MenuItemContextHeader + "XWearSource";
 		const string FromXRoidAvatarFixingContext = MenuItemContextHeader + "From XRoid Avatar Fixing";
 		const string RemoveUnusedSpringBonesCollidersTransformContext = MenuItemContextHeader + "Remove Unused Spring Bones, Colliders, Transforms";
+		const string CleanUnusedRenderersContext = MenuItemContextHeader + "Clean Unused Renderers";
 		const string Optimization = MenuItemContextHeader + "Optimization";
 
 		/// <summary>
@@ -66,7 +67,9 @@ namespace pspkurara.VRM10FromXRoidAvatarFixer.Editor
 					export.ExportPreLogic = (go) =>
 					{
 						// 修復処理
-						AvatarFixer.ConvertSpringBone(go.GetComponent<Vrm10Instance>());
+						var vrm = go.GetComponent<Vrm10Instance>();
+						AvatarFixer.ConvertSpringBone(vrm);
+						AvatarFixer.CleanUnusedRenderers(vrm);
 					};
 					// 書き出し
 					export.Export(Path.Combine(path, $"{o.name}.vrm"));
@@ -146,6 +149,33 @@ namespace pspkurara.VRM10FromXRoidAvatarFixer.Editor
 		}
 
 		/// <summary>
+		/// VRM1.0のVRM10Objectから未使用Rendererを削除する
+		/// ヒエラルキー上にインスタンスされている状態でなければ動作しない
+		/// 形式がVRM1.0と同じであれば編集中のプレハブでも動作する筈
+		/// </summary>
+		[MenuItem(GameObjectContext + CleanUnusedRenderersContext)]
+		public static void CleanUnusedRenderers()
+		{
+			var selectingAvatarRoot = Selection.objects
+				.Cast<GameObject>()
+				.Select(o => o.GetComponent<Vrm10Instance>())
+				.Where(o => o != null);
+
+			// 1つも選んでいなかったらやめる
+			if (selectingAvatarRoot.Count() == 0) return;
+
+			Debug.Log("Start Covert.");
+			foreach (var o in selectingAvatarRoot)
+			{
+				// 1つずつ変換する
+				AvatarFixer.CleanUnusedRenderers(o);
+				Debug.Log($"Completed {o.name}");
+			}
+
+			Debug.Log("Convert Completed.");
+		}
+
+		/// <summary>
 		/// XRoidから書き出したVRM1.0ファイルを修復して書き出す
 		/// その他の全修正を挟む
 		/// </summary>
@@ -190,6 +220,7 @@ namespace pspkurara.VRM10FromXRoidAvatarFixer.Editor
 						AvatarFixer.ConvertSpringBone(vrmInstance);
 						// 最適化処理
 						AvatarFixer.RemoveUnuseSpringBone(vrmInstance);
+						AvatarFixer.CleanUnusedRenderers(vrmInstance);
 					};
 					// 書き出し
 					export.Export(Path.Combine(path, $"{o.name}.vrm"));

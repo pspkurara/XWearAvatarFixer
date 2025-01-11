@@ -20,26 +20,7 @@ namespace pspkurara.VRM10FromXRoidAvatarFixer.Editor
 
 		private MeshExportValidator m_meshes;
 
-		private VRM10Object m_meta;
-		private VRM10Object Vrm
-		{
-			get { return m_meta; }
-			set
-			{
-				if (value != null && AssetDatabase.IsSubAsset(value))
-				{
-					value.Meta.CopyTo(m_tmpObject.Meta);
-					return;
-				}
-
-				if (m_meta == value)
-				{
-					return;
-				}
-				m_meta = value;
-			}
-		}
-		private VRM10Object m_tmpObject;
+		private VRM10Object Vrm;
 
 		private ExporterDialogState State;
 
@@ -50,43 +31,18 @@ namespace pspkurara.VRM10FromXRoidAvatarFixer.Editor
 		public Vrm10Export(GameObject asset)
 		{
 			State = new ExporterDialogState();
-			m_tmpObject = ScriptableObject.CreateInstance<VRM10Object>();
-			m_tmpObject.name = "_vrm1_";
-			m_tmpObject.Meta.Authors = new List<string> { "" };
 
 			m_settings = ScriptableObject.CreateInstance<VRM10ExportSettings>();
 
 			m_meshes = ScriptableObject.CreateInstance<MeshExportValidator>();
 
 			State.ExportRoot = asset;
-
-			State.ExportRootChanged += (root) =>
-			{
-				// update meta
-				if (root == null)
-				{
-					Vrm = null;
-				}
-				else
-				{
-					if (root.TryGetComponent<Vrm10Instance>(out var controller))
-					{
-						Vrm = controller.Vrm;
-					}
-					else
-					{
-						Vrm = null;
-					}
-				}
-			};
 		}
 
 		public void Dispose()
 		{
 			// Meta
 			Vrm = null;
-			ScriptableObject.DestroyImmediate(m_tmpObject);
-			m_tmpObject = null;
 			// m_settings
 			ScriptableObject.DestroyImmediate(m_settings);
 			m_settings = null;
@@ -152,7 +108,7 @@ namespace pspkurara.VRM10FromXRoidAvatarFixer.Editor
 					{
 						sparse = m_settings.MorphTargetUseSparse,
 					};
-					exporter.Export(root, model, converter, option, Vrm ? Vrm.Meta : m_tmpObject.Meta);
+					exporter.Export(root, model, converter, option);
 
 					var exportedBytes = exporter.Storage.ToGlbBytes();
 
