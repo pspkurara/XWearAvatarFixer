@@ -267,7 +267,7 @@ namespace pspkurara.VRM10FromXRoidAvatarFixer.Editor
 			{
 				List<Transform> deepTransforms = new List<Transform>();
 				var rootTransform = sp.GetRootTransform();
-				AvatarFixerUtility.GetDeepTransform(rootTransform, deepTransforms);
+				AvatarFixerUtility.GetDeepTransforms(rootTransform, deepTransforms);
 				var deepPath = deepTransforms.Select(t => AvatarFixerUtility.GetTransformPath(rootTransform, t));
 				if (!deepPath.Contains(springPath)) continue;
 				sourcePhysBone = sp;

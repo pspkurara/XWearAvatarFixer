@@ -37,7 +37,7 @@ namespace pspkurara.VRM10FromXRoidAvatarFixer.Editor
 		/// </summary>
 		/// <param name="t">トップ</param>
 		/// <param name="caches">見つけたツリーを格納するリスト</param>
-		public static void GetDeepTransform(Transform t, List<Transform> caches)
+		public static void GetDeepTransforms(Transform t, List<Transform> caches)
 		{
 			if (t.childCount == 0)
 			{
@@ -46,7 +46,7 @@ namespace pspkurara.VRM10FromXRoidAvatarFixer.Editor
 			}
 			for (int i = 0; i < t.childCount; i++)
 			{
-				GetDeepTransform(t.GetChild(i), caches);
+				GetDeepTransforms(t.GetChild(i), caches);
 			}
 		}
 
