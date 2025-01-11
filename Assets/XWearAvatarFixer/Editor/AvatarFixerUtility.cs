@@ -37,7 +37,7 @@ namespace pspkurara.VRM10FromXRoidAvatarFixer.Editor
 		/// </summary>
 		/// <param name="t">トップ</param>
 		/// <param name="caches">見つけたツリーを格納するリスト</param>
-		public static void GetDeepTransform(Transform t, List<Transform> caches)
+		public static void GetDeepTransforms(Transform t, List<Transform> caches)
 		{
 			if (t.childCount == 0)
 			{
@@ -46,8 +46,27 @@ namespace pspkurara.VRM10FromXRoidAvatarFixer.Editor
 			}
 			for (int i = 0; i < t.childCount; i++)
 			{
-				GetDeepTransform(t.GetChild(i), caches);
+				GetDeepTransforms(t.GetChild(i), caches);
 			}
+		}
+
+		/// <summary>
+		/// 引数に指定したTransformの最上位までのツリーを取得する
+		/// 順番は上から下へ
+		/// </summary>
+		/// <param name="t">ボトム</param>
+		/// <returns>見つけたツリーを格納するリスト</returns>
+		public static List<Transform> GetParentTransforms(Transform t)
+		{
+			List<Transform> tList = new List<Transform>();
+			var tr = t;
+			while (tr != null)
+			{
+				tList.Add(tr);
+				tr = tr.parent;
+			}
+			tList.Reverse();
+			return tList;
 		}
 
 		/// <summary>

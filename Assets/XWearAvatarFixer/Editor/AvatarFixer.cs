@@ -267,7 +267,7 @@ namespace pspkurara.VRM10FromXRoidAvatarFixer.Editor
 			{
 				List<Transform> deepTransforms = new List<Transform>();
 				var rootTransform = sp.GetRootTransform();
-				AvatarFixerUtility.GetDeepTransform(rootTransform, deepTransforms);
+				AvatarFixerUtility.GetDeepTransforms(rootTransform, deepTransforms);
 				var deepPath = deepTransforms.Select(t => AvatarFixerUtility.GetTransformPath(rootTransform, t));
 				if (!deepPath.Contains(springPath)) continue;
 				sourcePhysBone = sp;
@@ -411,6 +411,118 @@ namespace pspkurara.VRM10FromXRoidAvatarFixer.Editor
 			}
 			if (matchName) return true;
 			return false;
+		}
+
+		/// <summary>
+		/// 使っていないSpringBoneを消去する
+		/// </summary>
+		/// <param name="vrmInstance">対象VRM</param>
+		public static void RemoveUnuseSpringBone(Vrm10Instance vrmInstance)
+		{
+			Undo.RecordObject(vrmInstance, "Remove Spring Bone");
+
+			// 現状の使用中コライダーグループを列挙
+			var beforeColliders = vrmInstance.SpringBone.Springs
+				.SelectMany(s => s.ColliderGroups)
+				.Where(s => s != null)
+				.ToList();
+
+			// Joint数がゼロやnullしかないSpringは消去する
+			vrmInstance.SpringBone.Springs = vrmInstance.SpringBone.Springs
+				.Where(s => s != null)
+				.Where(s => s.Joints.Count > 0)
+				.Where(s => !s.Joints.All(j => j == null))
+				.ToList();
+
+			// 改めて現状のコライダーグループをチェック
+			var afterColliders = vrmInstance.SpringBone.Springs
+				.SelectMany(s => s.ColliderGroups);
+
+			// 前のコライダーグループの一覧と比較して消去対象を選別
+			var removedColliders = beforeColliders
+				// 新しいほうに存在しなければ「不要になった」と判断
+				.Where(c => !afterColliders.Contains(c));
+
+			// コライダーグループの一覧を整理
+			vrmInstance.SpringBone.ColliderGroups = vrmInstance.SpringBone.ColliderGroups
+				// 空のものは消去
+				.Where(c => c != null)
+				// 削除対象リストに入っているものを消去
+				.Where(c => !removedColliders.Contains(c))
+				.ToList();
+
+			// 未参照のコライダーグループを抽出する
+			var unusingColliderGroups = vrmInstance.GetComponentsInChildren<VRM10SpringBoneColliderGroup>()
+				.Where(c => !vrmInstance.SpringBone.ColliderGroups.Contains(c));
+
+			// コライダーグループを消去する
+			foreach (var c in unusingColliderGroups)
+			{
+				Undo.DestroyObjectImmediate(c);
+			}
+
+			// 現状残っているコライダーグループを抽出
+			var activeColliders = vrmInstance.GetComponentsInChildren<VRM10SpringBoneColliderGroup>()
+				.SelectMany(c => c.Colliders);
+
+			// 未参照のコライダーを抽出
+			var unusedColliders = vrmInstance.GetComponentsInChildren<VRM10SpringBoneCollider>()
+				.Where(c => !activeColliders.Contains(c));
+
+			// コライダーを削除する
+			foreach (var c in unusedColliders)
+			{
+				Undo.DestroyObjectImmediate(c);
+			}
+
+			// Jointのnullを消去する
+			foreach (var s in vrmInstance.SpringBone.Springs)
+			{
+				s.Joints = s.Joints.Where(j => j != null).ToList();
+			}
+
+			// 不要なtransformを削除する
+			// SkinnedMeshRendererに紐づいているボーンを選出
+			// 親に当たるものも取得
+			var skinnedMeshes = vrmInstance.GetComponentsInChildren<SkinnedMeshRenderer>();
+			List<Transform> tr = new List<Transform>();
+			foreach (var sm in skinnedMeshes)
+			{
+				tr.AddRange(sm.bones.SelectMany(smb => AvatarFixerUtility.GetParentTransforms(smb)));
+				tr.AddRange(AvatarFixerUtility.GetParentTransforms(sm.rootBone));
+				tr.AddRange(AvatarFixerUtility.GetParentTransforms(sm.probeAnchor));
+				tr.AddRange(AvatarFixerUtility.GetParentTransforms(sm.transform));
+				tr.Distinct();
+			}
+			// MeshRendererに紐づいているボーンを選出
+			// 親に当たるものも取得
+			var meshRenderers = vrmInstance.GetComponentsInChildren<MeshRenderer>();
+			foreach (var mr in meshRenderers)
+			{
+				if (mr.probeAnchor != null) tr.AddRange(AvatarFixerUtility.GetParentTransforms(mr.probeAnchor));
+				tr.AddRange(AvatarFixerUtility.GetParentTransforms(mr.transform));
+				tr.Distinct();
+			}
+			tr.RemoveAll(t => t == null);
+
+			// ヒップ以下のボーンを取得
+			var hipChilds = vrmInstance.Humanoid.Hips.GetComponentsInChildren<Transform>().Union(AvatarFixerUtility.GetParentTransforms(vrmInstance.Humanoid.Hips));
+			// 全ボーンから紐づきボーンを比較し、削除ターゲットを選定
+			var removeTargets = hipChilds.Distinct().Where(t => !tr.Contains(t)).ToList();
+			// ボーン以外のtransformで不要なものを削除
+			removeTargets.AddRange(vrmInstance.GetComponentsInChildren<Transform>()
+				// コンポーネント数が1つだったらTransformしかないと判断
+				.Where(t => !hipChilds.Contains(t)).Where(t => t.GetComponents<Component>().Length == 1));
+
+			// 削除ターゲットを削除する
+			foreach (var t in removeTargets)
+			{
+				if (t == null) continue;
+				Undo.DestroyObjectImmediate(t.gameObject);
+			}
+
+			// 反映
+			EditorUtility.SetDirty(vrmInstance);
 		}
 
 	}
