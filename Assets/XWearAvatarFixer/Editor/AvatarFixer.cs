@@ -421,6 +421,46 @@ namespace pspkurara.VRM10FromXRoidAvatarFixer.Editor
 		{
 			Undo.RecordObject(vrmInstance, "Remove Spring Bone");
 
+			// 不要なtransformを削除する
+			// SkinnedMeshRendererに紐づいているボーンを選出
+			// 親に当たるものも取得
+			var skinnedMeshes = vrmInstance.GetComponentsInChildren<SkinnedMeshRenderer>();
+			List<Transform> tr = new List<Transform>();
+			foreach (var sm in skinnedMeshes)
+			{
+				tr.AddRange(sm.bones.SelectMany(smb => AvatarFixerUtility.GetParentTransforms(smb)));
+				tr.AddRange(AvatarFixerUtility.GetParentTransforms(sm.rootBone));
+				tr.AddRange(AvatarFixerUtility.GetParentTransforms(sm.probeAnchor));
+				tr.AddRange(AvatarFixerUtility.GetParentTransforms(sm.transform));
+				tr.Distinct();
+			}
+			// MeshRendererに紐づいているボーンを選出
+			// 親に当たるものも取得
+			var meshRenderers = vrmInstance.GetComponentsInChildren<MeshRenderer>();
+			foreach (var mr in meshRenderers)
+			{
+				if (mr.probeAnchor != null) tr.AddRange(AvatarFixerUtility.GetParentTransforms(mr.probeAnchor));
+				tr.AddRange(AvatarFixerUtility.GetParentTransforms(mr.transform));
+				tr.Distinct();
+			}
+			tr.RemoveAll(t => t == null);
+
+			// ヒップ以下のボーンを取得
+			var hipChilds = vrmInstance.Humanoid.Hips.GetComponentsInChildren<Transform>().Union(AvatarFixerUtility.GetParentTransforms(vrmInstance.Humanoid.Hips));
+			// 全ボーンから紐づきボーンを比較し、削除ターゲットを選定
+			var removeTargets = hipChilds.Distinct().Where(t => !tr.Contains(t)).ToList();
+			// ボーン以外のtransformで不要なものを削除
+			removeTargets.AddRange(vrmInstance.GetComponentsInChildren<Transform>()
+				// コンポーネント数が1つだったらTransformしかないと判断
+				.Where(t => !hipChilds.Contains(t)).Where(t => t.GetComponents<Component>().Length == 1));
+
+			// 削除ターゲットを削除する
+			foreach (var t in removeTargets)
+			{
+				if (t == null) continue;
+				Undo.DestroyObjectImmediate(t.gameObject);
+			}
+
 			// 現状の使用中コライダーグループを列挙
 			var beforeColliders = vrmInstance.SpringBone.Springs
 				.SelectMany(s => s.ColliderGroups)
@@ -479,46 +519,6 @@ namespace pspkurara.VRM10FromXRoidAvatarFixer.Editor
 			foreach (var s in vrmInstance.SpringBone.Springs)
 			{
 				s.Joints = s.Joints.Where(j => j != null).ToList();
-			}
-
-			// 不要なtransformを削除する
-			// SkinnedMeshRendererに紐づいているボーンを選出
-			// 親に当たるものも取得
-			var skinnedMeshes = vrmInstance.GetComponentsInChildren<SkinnedMeshRenderer>();
-			List<Transform> tr = new List<Transform>();
-			foreach (var sm in skinnedMeshes)
-			{
-				tr.AddRange(sm.bones.SelectMany(smb => AvatarFixerUtility.GetParentTransforms(smb)));
-				tr.AddRange(AvatarFixerUtility.GetParentTransforms(sm.rootBone));
-				tr.AddRange(AvatarFixerUtility.GetParentTransforms(sm.probeAnchor));
-				tr.AddRange(AvatarFixerUtility.GetParentTransforms(sm.transform));
-				tr.Distinct();
-			}
-			// MeshRendererに紐づいているボーンを選出
-			// 親に当たるものも取得
-			var meshRenderers = vrmInstance.GetComponentsInChildren<MeshRenderer>();
-			foreach (var mr in meshRenderers)
-			{
-				if (mr.probeAnchor != null) tr.AddRange(AvatarFixerUtility.GetParentTransforms(mr.probeAnchor));
-				tr.AddRange(AvatarFixerUtility.GetParentTransforms(mr.transform));
-				tr.Distinct();
-			}
-			tr.RemoveAll(t => t == null);
-
-			// ヒップ以下のボーンを取得
-			var hipChilds = vrmInstance.Humanoid.Hips.GetComponentsInChildren<Transform>().Union(AvatarFixerUtility.GetParentTransforms(vrmInstance.Humanoid.Hips));
-			// 全ボーンから紐づきボーンを比較し、削除ターゲットを選定
-			var removeTargets = hipChilds.Distinct().Where(t => !tr.Contains(t)).ToList();
-			// ボーン以外のtransformで不要なものを削除
-			removeTargets.AddRange(vrmInstance.GetComponentsInChildren<Transform>()
-				// コンポーネント数が1つだったらTransformしかないと判断
-				.Where(t => !hipChilds.Contains(t)).Where(t => t.GetComponents<Component>().Length == 1));
-
-			// 削除ターゲットを削除する
-			foreach (var t in removeTargets)
-			{
-				if (t == null) continue;
-				Undo.DestroyObjectImmediate(t.gameObject);
 			}
 
 			// 反映
