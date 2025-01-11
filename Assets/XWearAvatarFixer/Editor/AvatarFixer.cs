@@ -460,6 +460,7 @@ namespace pspkurara.VRM10FromXRoidAvatarFixer.Editor
 				if (t == null) continue;
 				Undo.DestroyObjectImmediate(t.gameObject);
 			}
+			removeTargets.Clear();
 
 			// 現状の使用中コライダーグループを列挙
 			var beforeColliders = vrmInstance.SpringBone.Springs
@@ -519,6 +520,19 @@ namespace pspkurara.VRM10FromXRoidAvatarFixer.Editor
 			foreach (var s in vrmInstance.SpringBone.Springs)
 			{
 				s.Joints = s.Joints.Where(j => j != null).ToList();
+			}
+
+			// 再度ヒップ以下のボーンを取得
+			hipChilds = vrmInstance.Humanoid.Hips.GetComponentsInChildren<Transform>().Union(AvatarFixerUtility.GetParentTransforms(vrmInstance.Humanoid.Hips));
+			// ボーン以外のtransformで不要なものを削除
+			removeTargets.AddRange(vrmInstance.GetComponentsInChildren<Transform>()
+				// コンポーネント数が1つだったらTransformしかないと判断
+				.Where(t => !hipChilds.Contains(t)).Where(t => t.GetComponents<Component>().Length == 1));
+			// 削除ターゲットを削除する
+			foreach (var t in removeTargets)
+			{
+				if (t == null) continue;
+				Undo.DestroyObjectImmediate(t.gameObject);
 			}
 
 			// 反映
