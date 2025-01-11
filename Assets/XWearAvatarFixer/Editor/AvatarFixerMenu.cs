@@ -269,6 +269,7 @@ namespace pspkurara.VRM10FromXRoidAvatarFixer.Editor
 				// 1つずつ変換する
 				AvatarFixer.ConvertSpringBone(o);
 				AvatarFixer.RemoveUnuseSpringBone(o);
+				AvatarFixer.CleanUnusedRenderers(o);
 				Debug.Log($"Completed {o.name}");
 			}
 
