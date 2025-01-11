@@ -115,7 +115,7 @@ namespace pspkurara.VRM10FromXRoidAvatarFixer.Editor
 		}
 
 		/// <summary>
-		/// VRM1.0プレハブの使っていないSpringJointとColliderを消去する
+		/// VRM1.0プレハブの使っていないSpringJointとCollider、使っていないTransformを消去する
 		/// ヒエラルキー上にインスタンスされている状態でなければ動作しない
 		/// 形式がVRM1.0と同じであれば編集中のプレハブでも動作する筈
 		/// </summary>
