@@ -51,6 +51,25 @@ namespace pspkurara.VRM10FromXRoidAvatarFixer.Editor
 		}
 
 		/// <summary>
+		/// 引数に指定したTransformの最上位までのツリーを取得する
+		/// 順番は上から下へ
+		/// </summary>
+		/// <param name="t">ボトム</param>
+		/// <returns>見つけたツリーを格納するリスト</returns>
+		public static List<Transform> GetParentTransforms(Transform t)
+		{
+			List<Transform> tList = new List<Transform>();
+			var tr = t;
+			while (tr != null)
+			{
+				tList.Add(tr);
+				tr = tr.parent;
+			}
+			tList.Reverse();
+			return tList;
+		}
+
+		/// <summary>
 		/// VRM10のシェイプタイプに変換
 		/// </summary>
 		/// <returns>シェイプタイプ</returns>
