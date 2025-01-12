@@ -22,9 +22,10 @@ XWear Packager/VRoid Studioの着せ替え機能で書き出したVRM1.0の物�
 
 ## 確認環境
 
-[XWear Packager](https://vroid.notion.site/XWear-Packager-8284c73c208e440ba8dd8033349d5978) v0.3.2</br>
-[VRoid Studio](https://vroid.pixiv.help/hc) v2.0.0</br>
-Unity 2022.3.2f1
+- [XWear Packager](https://vroid.notion.site/XWear-Packager-8284c73c208e440ba8dd8033349d5978) v0.3.2
+- [VRoid Studio](https://vroid.pixiv.help/hc) v2.0.0
+- Unity 2022.3.2f1
+- [VRM](https://github.com/vrm-c/UniVRM) 0.127.0 (←は開発環境なので、0.127系なら動作すると思われる)
 
 その他XWear Package該当バージョンの推奨環境
 
