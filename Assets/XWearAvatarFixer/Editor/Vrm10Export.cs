@@ -94,8 +94,11 @@ namespace pspkurara.VRM10FromXRoidAvatarFixer.Editor
 					ExportPreLogic?.Invoke(root);
 
 					var converter = new UniVRM10.ModelExporter();
+#if VRM10_0_128_OR_NEWER
+					var model = converter.Export(m_settings.MeshExportSettings, arrayManager, root);
+#else
 					var model = converter.Export(arrayManager, root);
-
+#endif
 					// 右手系に変換
 					model.ConvertCoordinate(VrmLib.Coordinates.Vrm1, ignoreVrm: false);
 
