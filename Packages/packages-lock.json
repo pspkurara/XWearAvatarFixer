@@ -179,35 +179,24 @@
       "depth": 0,
       "source": "embedded",
       "dependencies": {
-        "com.vrmc.gltf": "0.127.0",
+        "com.vrmc.gltf": "0.128.1",
         "com.unity.ugui": "1.0.0"
       }
     },
     "com.vrmc.vrm": {
-      "version": "https://github.com/vrm-c/UniVRM.git?path=/Assets/VRM10#v0.127.0",
+      "version": "file:com.vrmc.vrm",
       "depth": 0,
-      "source": "git",
+      "source": "embedded",
       "dependencies": {
-        "com.vrmc.gltf": "0.127.0"
-      },
-      "hash": "d320f73eecc5a434a2afbdaf5a27f6c98d5c82a9"
+        "com.vrmc.gltf": "0.128.1"
+      }
     },
     "jp.pokemori.univrm-extensions": {
       "version": "file:jp.pokemori.univrm-extensions",
       "depth": 0,
       "source": "embedded",
       "dependencies": {
-        "com.vrmc.univrm": "0.127.0"
-      }
-    },
-    "jp.pokemori.vrm-converter-for-vrchat": {
-      "version": "file:jp.pokemori.vrm-converter-for-vrchat",
-      "depth": 0,
-      "source": "embedded",
-      "dependencies": {
-        "com.vrchat.avatars": "3.5.0",
-        "com.vrmc.univrm": "0.127.0",
-        "jp.pokemori.univrm-extensions": "10.3.0"
+        "com.vrmc.univrm": "0.128.1"
       }
     },
     "com.unity.modules.ai": {
